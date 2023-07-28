@@ -1665,7 +1665,7 @@ class Shell(cmd.Cmd):
                 self.do_describe(parsed, client_side=True)
             except CQL_ERRORS as err:
                 err_msg = err.message if hasattr(err, 'message') else str(err)
-                self.printerr(err_msg.partition("message=")[2].strip('"'))
+                self.printerr(str(err.__class__.__name__) + ": " + err_msg)
             except Exception:
                 import traceback
                 self.printerr(traceback.format_exc())
