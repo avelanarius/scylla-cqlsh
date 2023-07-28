@@ -777,39 +777,19 @@ class TestCqlshOutput(BaseTestCase):
             \n
             Cluster: [ ] (?P<clustername> .* ) \n
             Partitioner: [ ] (?P<partitionername> .* ) \n
-            Snitch: [ ] (?P<snitchname> .* ) \n
+            ( Snitch: [ ] (?P<snitchname> .* ) \n )?
             \n
         '''
 
         ringinfo_re = r'''
             Range[ ]ownership: \n
             (
-              [ ] .*? [ ][ ] \[ .*? / ( \d+ \. ){3} \d+ : \d+ \] \n
-            )+
-            \n
-        '''
-
-        output_re_client = r'''(?x)
-            ^
-            \n
-            Cluster: [ ] (?P<clustername> .* ) \n
-            Partitioner: [ ] (?P<partitionername> .* ) \n
-            \n
-        '''
-
-
-        ringinfo_re_client = r'''
-            Range[ ]ownership: \n
-            (
-              [ ] .*? [ ][ ] \[ ( \d+ \. ){3} \d+ \] \n
+              [ ] .*? [ ][ ] \[ ( .*? / )? ( \d+ \. ){3} \d+ ( : \d+ )? \] \n
             )+
             \n
         '''
 
         with testrun_cqlsh(tty=True, keyspace=None, env=self.default_env) as c:
-            if self.release_version < Version('4.0'):
-                output_re = output_re_client
-                ringinfo_re = ringinfo_re_client
             # not in a keyspace
             for semicolon in ('', ';'):
                 output = c.cmd_and_response('describe cluster' + semicolon)
