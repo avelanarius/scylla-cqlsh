@@ -668,7 +668,7 @@ class TestCqlshOutput(BaseTestCase):
                 varintcol varint
             ) WITH additional_write_policy = '99p'
                 AND bloom_filter_fp_chance = 0.01
-                AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+                AND caching = {'keys': 'ALL','rows_per_partition': 'NONE'}
                 AND cdc = false
                 AND comment = ''
                 AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
@@ -686,7 +686,7 @@ class TestCqlshOutput(BaseTestCase):
 
         scylla_table_desc = dedent("""
             CREATE TABLE %s.has_all_types (
-                num int PRIMARY KEY,
+                num int,
                 asciicol ascii,
                 bigintcol bigint,
                 blobcol blob,
@@ -701,9 +701,10 @@ class TestCqlshOutput(BaseTestCase):
                 tinyintcol tinyint,
                 uuidcol uuid,
                 varcharcol text,
-                varintcol varint
+                varintcol varint,
+                PRIMARY KEY (num)
             ) WITH bloom_filter_fp_chance = 0.01
-                AND caching = {'keys': 'ALL', 'rows_per_partition': 'ALL'}
+                AND caching = {'keys': 'ALL','rows_per_partition': 'ALL'}
                 AND comment = ''
                 AND compaction = {'class': 'SizeTieredCompactionStrategy'}
                 AND compression = {'sstable_compression': 'org.apache.cassandra.io.compress.LZ4Compressor'}
@@ -977,7 +978,8 @@ class TestCqlshOutput(BaseTestCase):
 
         expected = dedent(f"""
         CREATE TABLE {ks}.ccc (
-            pkey int PRIMARY KEY
+            pkey int,
+            PRIMARY KEY (pkey)
         ) WITH bloom_filter_fp_chance = 0.01
             AND caching = {{'keys': 'ALL', 'rows_per_partition': 'ALL'}}
             AND comment = ''
